@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="sty-site.css" />
+    <link rel="stylesheet" href="../Site/sty-site.css" />
     <title>CDCI.TM</title>
 </head>
 
@@ -15,9 +15,10 @@
 
     <div class="main-content">
         <div class="cont">
-            <p>Este é o melhor site para você que deseja tratar seus documentos.</p>
+            <p>Informe-nos</p>
+            <p>O que precisa</p>
             <section>
-                Diga-nos que tipo de documentos você precisa tratar, e forneceremos os requisitos. Documentos como Bilhete, Passaporte, Carta de condução, cartão eleitoral são aceitos.
+                Bilhete ou  Passaporte  ou  Carta de condução
             </section>
         </div>
 
@@ -29,6 +30,11 @@
         </div>
 
         <div id="map" style="height: 400px;"></div>
+
+        <!-- Adicione a seção para exibir requisitos -->
+        <div id="requirements">
+            <!-- Aqui serão exibidos os requisitos específicos -->
+        </div>
     </div>
 
     <!-- Adicione a biblioteca Leaflet -->
@@ -45,11 +51,20 @@
             const documentName = documentInput.value.toLowerCase();
 
             if (documentName === 'bilhete') {
-                // Se o documento for "Bilhete", cria um caminho entre São Paulo e Rio de Janeiro
-                createRoute([-23.550520, -46.633308], [-22.908333, -43.196388]);
+                // Se o documento for "Bilhete", cria um caminho entre Mussulo e Kilamba Kiaxe
+                createRoute([-8.8583, 13.2719], [-8.8539, 13.2875]);
+                // Exibe os requisitos para tratar bilhete de identidade
+                displayRequirementsForBilhete();
             } else if (documentName === 'passaporte') {
-                // Se o documento for "Passaporte", cria um caminho entre Lisboa e Porto
-                createRoute([38.722252, -9.139337], [41.157944, -8.629105]);
+                // Se o documento for "Passaporte", cria um caminho entre Mussulo e Maianga
+                createRoute([-8.8583, 13.2719], [-8.9269, 13.1950]);
+                // Exibe os requisitos para tratar passaporte
+                displayRequirementsForPassaporte();
+            } else if (documentName === 'carta de condução') {
+                // Se o documento for "Carta de Condução", cria um caminho entre Mussulo e Talatona
+                createRoute([-8.8583, 13.2719], [-8.9163, 13.2090]);
+                // Exibe os requisitos para tratar carta de condução
+                displayRequirementsForCartaDeConducao();
             } else {
                 alert('Documento não reconhecido. Por favor, insira um documento válido.');
             }
@@ -57,33 +72,22 @@
 
         // Função para criar um caminho entre dois pontos
         function createRoute(startCoords, endCoords) {
-            const map = L.map('map').setView(startCoords, 6);
+            const map = L.map('map').setView(startCoords, 12);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
 
-            // Cria ícones personalizados
-            const startIcon = L.icon({
-                iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/88/Map_marker.svg',
-                iconSize: [32, 32],
-                iconAnchor: [16, 32],
-                popupAnchor: [0, -32]
-            });
-
-            const endIcon = L.icon({
-                iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/88/Map_marker.svg',
-                iconSize: [32, 32],
-                iconAnchor: [16, 32],
-                popupAnchor: [0, -32]
-            });
-
-            // Adiciona marcadores para os pontos de partida e chegada usando ícones personalizados
-            const startMarker = L.marker(startCoords, { icon: startIcon }).addTo(map);
+            // Adiciona marcadores para os pontos de partida e chegada usando o novo ícone com cor azul
+            const startMarker = L.marker(startCoords, { icon: customIcon('blue') }).addTo(map);
             startMarker.bindPopup('Partida');
 
-            const endMarker = L.marker(endCoords, { icon: endIcon }).addTo(map);
+            const endMarker = L.marker(endCoords, { icon: customIcon('blue') }).addTo(map);
             endMarker.bindPopup('Chegada');
+
+            // Adiciona um marcador adicional com o ícone personalizado para o usuário
+            const userMarker = L.marker(startCoords, { icon: customIcon('blue') }).addTo(map);
+            userMarker.bindPopup('Usuário');
 
             // Use o serviço OpenRouteService para obter um caminho entre os dois marcadores
             const routeControl = L.Routing.control({
@@ -93,6 +97,99 @@
                 ],
                 routeWhileDragging: true
             }).addTo(map);
+        }
+
+        // Função para exibir requisitos para tratar bilhete de identidade
+        function displayRequirementsForBilhete() {
+            const requirementsDiv = document.getElementById('requirements');
+            requirementsDiv.innerHTML = `
+                <h3>Requisitos para tratar Bilhete de Identidade:</h3>
+                <ul>
+                    <li>Fotografia do Indivíduo: Uma imagem recente do rosto do titular do bilhete de identidade.</li>
+                    <li>Nome Completo: O nome legal completo do indivíduo.</li>
+                    <li>Número de Identificação: Um número único atribuído ao titular para fins de identificação.</li>
+                    <li>Data de Nascimento: A data de nascimento do titular.</li>
+                    <li>Assinatura: A assinatura do titular do bilhete de identidade.</li>
+                    <li>Data de Emissão e Validade: A data em que o bilhete de identidade foi emitido e a data de validade, se aplicável.</li>
+                    <li>Local de Emissão: O local onde o bilhete de identidade foi emitido.</li>
+                    <li>Informações Adicionais: Outras informações podem incluir a nacionalidade, filiação, endereço ou dados biométricos, dependendo do país e do formato do documento.</li>
+                    <li>Outros requisitos específicos...</li>
+                </ul>
+            `;
+        }
+
+        // Função para exibir requisitos para tratar passaporte
+        function displayRequirementsForPassaporte() {
+            const requirementsDiv = document.getElementById('requirements');
+            requirementsDiv.innerHTML = `
+                <h3>Requisitos para tratar Passaporte:</h3>
+                <ul>
+                    <li>Preenchimento correto do formulário de solicitação de passaporte.</li>
+                    <li>Documento de identificação válido, como carteira de identidade ou carteira de motorista.</li>
+                    <li>Certidão de nascimento ou casamento.</li>
+                    <li>Comprovante de pagamento da taxa.</li>
+                    <li>Foto recente conforme as especificações do órgão emissor.</li>
+                    <li>Passaporte anterior (se aplicável).</li>
+                    <li>Autorização para menores de idade (se aplicável).</li>
+                    <li>Comprovante de residência.</li>
+                    <li>Outros requisitos específicos...</li>
+                </ul>
+            `;
+        }
+
+        // Função para exibir requisitos para tratar carta de condução
+        function displayRequirementsForCartaDeConducao() {
+            const requirementsDiv = document.getElementById('requirements');
+            requirementsDiv.innerHTML = `
+                <h3>Requisitos para tratar Carta de Condução:</h3>
+                <ul>
+                    <li>Identificação pessoal:</li>
+                    <ul>
+                        <li>Carteira de identidade</li>
+                        <li>Passaporte</li>
+                        <li>Cartão de cidadão</li>
+                    </ul>
+                    <li>Comprovante de residência:</li>
+                    <ul>
+                        <li>Conta de luz, água, gás ou telefone em seu nome</li>
+                        <li>Contrato de aluguel</li>
+                    </ul>
+                    <li>Atestado médico:</li>
+                    <ul>
+                        <li>Alguns lugares exigem um atestado médico para garantir que você está fisicamente apto para dirigir. Isso geralmente inclui um exame de visão e uma avaliação geral da saúde.</li>
+                    </ul>
+                    <li>Certificado de conclusão de curso teórico/prático:</li>
+                    <ul>
+                        <li>Se você precisou frequentar aulas teóricas ou práticas, geralmente é necessário apresentar um certificado que comprove a conclusão do curso.</li>
+                    </ul>
+                    <li>Foto recente:</li>
+                    <ul>
+                        <li>Fotos para documentos oficiais, de acordo com os padrões locais.</li>
+                    </ul>
+                    <li>Taxas e formulários:</li>
+                    <ul>
+                        <li>Pode ser necessário pagar taxas administrativas e preencher formulários específicos do órgão responsável pela emissão da carteira de condução.</li>
+                    </ul>
+                    <li>Carta de aprendizagem (se aplicável):</li>
+                    <ul>
+                        <li>Se você estiver passando pelo processo de aprendizagem supervisionada, pode ser necessário apresentar a carta de aprendizagem ou documento equivalente.</li>
+                    </ul>
+                    <li>Exame teórico e prático:</li>
+                    <ul>
+                        <li>Dependendo do país, você pode precisar passar por exames teóricos e práticos para obter sua carteira de condução. Os certificados desses exames podem ser necessários durante o processo.</li>
+                    </ul>
+                </ul>
+            `;
+        }
+
+        // Cria um ícone personalizado para o usuário com a cor azul
+        function customIcon(color) {
+            return L.icon({
+                iconUrl: `data:image/svg+xml;charset=UTF-8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16"%3E%3Cpath d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.960-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10"/%3E%3Cpath d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/%3E%3C/svg%3E`,
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32]
+            });
         }
     </script>
 </body>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Manager App</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            margin: 20px;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            height: 100px;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .saved-content {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .saved-content-item {
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: #ddd;
+            border-radius: 5px;
+        }
+
+        .saved-content-item button {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <label for="title">Título:</label>
+    <input type="text" id="title">
+
+    <label for="content">Conteúdo:</label>
+    <textarea id="content"></textarea>
+
+    <button onclick="saveContent()">Salvar Conteúdo</button>
+    <button onclick="convertToAudio()">Converter para Áudio</button>
+
+    <div class="saved-content">
+        <h2>Conteúdos Salvos</h2>
+        <div id="savedContentList"></div>
+        <button onclick="retrieveSelectedContent()">Recuperar Conteúdo Selecionado</button>
+    </div>
+
+    <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+    <script>
+        function saveContent() {
+            var title = document.getElementById("title").value;
+            var content = document.getElementById("content").value;
+
+            // Criar um novo item e adicioná-lo à lista
+            var savedContentList = document.getElementById("savedContentList");
+            var newItem = document.createElement("div");
+            newItem.className = "saved-content-item";
+            newItem.innerHTML = "<strong>" + title + "</strong>: " + content + 
+                '<button onclick="playSavedContent(this)">Ouvir</button>' +
+                '<button onclick="removeSavedContent(this)">Remover</button>';
+            savedContentList.appendChild(newItem);
+        }
+
+        function playSavedContent(button) {
+            var contentText = button.parentNode.textContent.split(":")[1].trim();
+            responsiveVoice.speak(contentText, "Brazilian Portuguese Female");
+        }
+
+        function removeSavedContent(button) {
+            var itemToRemove = button.parentNode;
+            itemToRemove.parentNode.removeChild(itemToRemove);
+        }
+
+        function retrieveSelectedContent() {
+            var savedContentList = document.getElementById("savedContentList");
+            var selectedItems = savedContentList.querySelectorAll(".saved-content-item");
+
+            // Recuperar o conteúdo dos itens selecionados
+            selectedItems.forEach(function(item) {
+                var title = item.querySelector("strong").textContent;
+                var content = item.textContent.split(":")[1].trim();
+                
+                // Implemente a lógica para utilizar o título e o conteúdo conforme desejado
+                console.log("Título:", title);
+                console.log("Conteúdo:", content);
+            });
+        }
+    </script>
+</body>
+</html>
