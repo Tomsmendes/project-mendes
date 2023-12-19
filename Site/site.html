@@ -44,14 +44,9 @@
             const documentInput = document.getElementById('documentName');
             const documentName = documentInput.value.toLowerCase();
 
-            // Limpa as informações de requisitos
-            clearRequirements();
-
             if (documentName === 'bilhete') {
                 // Se o documento for "Bilhete", cria um caminho entre São Paulo e Rio de Janeiro
                 createRoute([-23.550520, -46.633308], [-22.908333, -43.196388]);
-                // Após criar o mapa, exibe as informações de requisitos para Bilhete
-                showRequirements('bilhete');
             } else if (documentName === 'passaporte') {
                 // Se o documento for "Passaporte", cria um caminho entre Lisboa e Porto
                 createRoute([38.722252, -9.139337], [41.157944, -8.629105]);
@@ -68,37 +63,36 @@
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
 
-            // Restante do código do mapa e rota permanece o mesmo
-            // ...
-        }
+            // Cria ícones personalizados
+            const startIcon = L.icon({
+                iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/88/Map_marker.svg',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32]
+            });
 
-        // Função para exibir as informações de requisitos
-        function showRequirements(documentType) {
-            if (documentType === 'bilhete') {
-                const requirements = `
-                    <h2>REQUISITOS NECESSÁRIOS PARA A EMISSÃO DO B.I. (1.ª vez)</h2>
-                    <p>Cópia Integral do Assento de Nascimento.</p>
+            const endIcon = L.icon({
+                iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/88/Map_marker.svg',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32]
+            });
 
-                    <h2>REQUISITOS PARA EMISSÃO DO BILHETE DE IDENTIDADE (2ª Via)</h2>
-                    <p>Cópia do Bilhete de Identidade.</p>
-                    <p>Declaração de Extravio, Furto/Roubo ou má conservação do B.I;</p>
-                    <p>Cópia do Cartão de Inscrição Consular.</p>
+            // Adiciona marcadores para os pontos de partida e chegada usando ícones personalizados
+            const startMarker = L.marker(startCoords, { icon: startIcon }).addTo(map);
+            startMarker.bindPopup('Partida');
 
-                    <h2>REQUISITOS PARA RENOVAÇÃO DO BILHETE DE IDENTIDADE</h2>
-                    <p>Original ou Cópia do Bilhete de Identidade;</p>
-                    <p>Original do Assento de Nascimento ou Cópia autenticada;</p>
-                    <p>Cópia do Cartão de Inscrição Consular.</p>
-                `;
+            const endMarker = L.marker(endCoords, { icon: endIcon }).addTo(map);
+            endMarker.bindPopup('Chegada');
 
-                // Adiciona as informações à página
-                document.body.insertAdjacentHTML('beforeend', requirements);
-            }
-        }
-
-        // Função para limpar as informações de requisitos
-        function clearRequirements() {
-            // Remove as informações de requisitos do corpo da página
-            document.body.innerHTML = '';
+            // Use o serviço OpenRouteService para obter um caminho entre os dois marcadores
+            const routeControl = L.Routing.control({
+                waypoints: [
+                    L.latLng(startCoords), // Ponto de partida
+                    L.latLng(endCoords)    // Ponto de chegada
+                ],
+                routeWhileDragging: true
+            }).addTo(map);
         }
     </script>
 </body>
